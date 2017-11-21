@@ -3,6 +3,9 @@ package com.brunom24.flappybirdclone.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.brunom24.flappybirdclone.gameworld.GameRenderer;
+import com.brunom24.flappybirdclone.gameworld.GameWorld;
+import com.brunom24.flappybirdclone.helpers.InputHandler;
 
 /**
  * FlappyBirdClone Created by BrunoM24 on 21/11/2017.
@@ -10,8 +13,23 @@ import com.badlogic.gdx.graphics.GL20;
 
 public class GameScreen implements Screen{
 
+    private GameWorld gameWorld;
+    private GameRenderer gameRenderer;
+    private float runTime = 0;
+
     public GameScreen(){
-        Gdx.app.log("GameScreen", "Attached");
+
+        float screenWidth = Gdx.graphics.getWidth();
+        float screenHeight = Gdx.graphics.getHeight();
+        float gameWidth = 136;
+        float gameHeight = screenHeight / (screenWidth / gameWidth);
+
+        int midPointY = (int)(gameHeight / 2);
+
+        this.gameWorld = new GameWorld(midPointY);
+        this.gameRenderer = new GameRenderer(this.gameWorld, (int)gameHeight, midPointY);
+
+        Gdx.input.setInputProcessor(new InputHandler(this.gameWorld.getBird()));
     }
 
     @Override
@@ -21,11 +39,9 @@ public class GameScreen implements Screen{
 
     @Override
     public void render(float delta) {
-        // Sets a Color to Fill the Screen with (RGB = 10, 15, 230), Opacity of 1 (100%)
-        Gdx.gl.glClearColor(10/255.0f, 15/255.0f, 230/255.0f, 1f);
-        // Fills the screen with the selected color
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        Gdx.app.log("GameScreen", (1/delta) + "");
+        this.runTime += delta;
+        this.gameWorld.update(delta);
+        this.gameRenderer.render(runTime);
     }
 
     @Override
