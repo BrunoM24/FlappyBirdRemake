@@ -1,7 +1,6 @@
 package com.brunom24.flappybirdclone.gameobjects;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -17,12 +16,18 @@ public class Bird {
     private int width;
     private int height;
 
+    private Circle boundes;
+
+    private boolean isAlive;
+
     public Bird(float x, float y, int width, int height) {
         this.width = width;
         this.height = height;
         this.position = new Vector2(x, y);
         this.velocity = new Vector2(0, 0);
         this.acceleration = new Vector2(0, 460);
+        this.boundes = new Circle();
+        this.isAlive = true;
     }
 
     public void update(float delta) {
@@ -33,6 +38,7 @@ public class Bird {
         }
 
         this.position.add(velocity.cpy().scl(delta));
+        this.boundes.set(this.position.x + 9, this.position.y + 6, 6.5f);
 
         if (this.velocity.y < 0) {
             this.rotation -= 600 * delta;
@@ -42,17 +48,28 @@ public class Bird {
             }
         }
 
-        if(isFalling()){
+        if (isFalling() || !isAlive) {
             rotation += 480 * delta;
 
-            if(rotation >90){
+            if (rotation > 90) {
                 rotation = 90;
             }
         }
     }
 
     public void onClick() {
-        this.velocity.y = -140;
+        if (isAlive) {
+            this.velocity.y = -140;
+        }
+    }
+
+    public void die(){
+        isAlive = false;
+        velocity.y = 0;
+    }
+
+    public void decelerate(){
+        acceleration.y = 0;
     }
 
     public boolean isFalling() {
@@ -60,7 +77,7 @@ public class Bird {
     }
 
     public boolean shouldntFlap() {
-        return this.velocity.y > 70;
+        return this.velocity.y > 70 || !isAlive;
     }
 
     public float getX() {
@@ -81,6 +98,14 @@ public class Bird {
 
     public float getRotation() {
         return rotation;
+    }
+
+    public Circle getBoundes() {
+        return boundes;
+    }
+
+    public boolean isAlive() {
+        return isAlive;
     }
 }
 

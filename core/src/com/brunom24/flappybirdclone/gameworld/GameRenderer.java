@@ -9,6 +9,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.brunom24.flappybirdclone.gameobjects.Bird;
+import com.brunom24.flappybirdclone.gameobjects.Grass;
+import com.brunom24.flappybirdclone.gameobjects.Pipe;
+import com.brunom24.flappybirdclone.gameobjects.ScrollHandler;
 import com.brunom24.flappybirdclone.helpers.AssetLoader;
 
 /**
@@ -32,6 +35,13 @@ public class GameRenderer {
     private Animation birdAnimation;
     private TextureRegion birdMid, birdDown, birdUp;
     private TextureRegion skullUp, skullDown, bar;
+
+    private ScrollHandler scrollHandler;
+    private Grass frontGrass;
+    private Grass backGrass;
+    private Pipe pipe1;
+    private Pipe pipe2;
+    private Pipe pipe3;
 
     public GameRenderer(GameWorld gameWorld, int gameHeight, int midPointY) {
         this.gameWorld = gameWorld;
@@ -78,7 +88,13 @@ public class GameRenderer {
         spriteBatch.disableBlending();
         spriteBatch.draw(this.bg, 0, midPointY + 23, 136, 43);
 
+        drawGrass();
+
+        drawPipes();
+
         spriteBatch.enableBlending();
+
+        drawSkulls();
 
         if(this.bird.shouldntFlap()){
             spriteBatch.draw(this.birdMid, this.bird.getX(), this.bird.getY(),
@@ -95,6 +111,12 @@ public class GameRenderer {
 
     private void initGameObjects(){
         this.bird = this.gameWorld.getBird();
+        this.scrollHandler = this.gameWorld.getScrollHandler();
+        this.frontGrass = this.scrollHandler.getFrontGrass();
+        this.backGrass = this.scrollHandler.getBackGrass();
+        this.pipe1 = this.scrollHandler.getPipe1();
+        this.pipe2 = this.scrollHandler.getPipe2();
+        this.pipe3 = this.scrollHandler.getPipe3();
     }
 
     private void initGameAssets(){
@@ -107,5 +129,52 @@ public class GameRenderer {
         this.skullUp = AssetLoader.skullUp;
         this.skullDown = AssetLoader.skullDown;
         this.bar = AssetLoader.bar;
+    }
+
+    private void drawGrass(){
+        this.spriteBatch.draw(this.grass, this.frontGrass.getX(), this.frontGrass.getY(),
+                this.frontGrass.getWidth(), this.frontGrass.getHeight());
+
+        this.spriteBatch.draw(this.grass, this.backGrass.getX(), this.backGrass.getY(),
+                this.backGrass.getWidth(), this.backGrass.getHeight());
+    }
+
+    private void drawSkulls() {
+        // Temporary code! Sorry about the mess :)
+        // We will fix this when we finish the Pipe class.
+
+        this.spriteBatch.draw(skullUp, pipe1.getX() - 1,
+                pipe1.getY() + pipe1.getHeight() - 14, 24, 14);
+        this.spriteBatch.draw(skullDown, pipe1.getX() - 1,
+                pipe1.getY() + pipe1.getHeight() + 45, 24, 14);
+
+        this.spriteBatch.draw(skullUp, pipe2.getX() - 1,
+                pipe2.getY() + pipe2.getHeight() - 14, 24, 14);
+        this.spriteBatch.draw(skullDown, pipe2.getX() - 1,
+                pipe2.getY() + pipe2.getHeight() + 45, 24, 14);
+
+        this.spriteBatch.draw(skullUp, pipe3.getX() - 1,
+                pipe3.getY() + pipe3.getHeight() - 14, 24, 14);
+        this.spriteBatch.draw(skullDown, pipe3.getX() - 1,
+                pipe3.getY() + pipe3.getHeight() + 45, 24, 14);
+    }
+
+    private void drawPipes() {
+        // Temporary code! Sorry about the mess :)
+        // We will fix this when we finish the Pipe class.
+        this.spriteBatch.draw(bar, pipe1.getX(), pipe1.getY(), pipe1.getWidth(),
+                pipe1.getHeight());
+        this.spriteBatch.draw(bar, pipe1.getX(), pipe1.getY() + pipe1.getHeight() + 45,
+                pipe1.getWidth(), midPointY + 66 - (pipe1.getHeight() + 45));
+
+        this.spriteBatch.draw(bar, pipe2.getX(), pipe2.getY(), pipe2.getWidth(),
+                pipe2.getHeight());
+        this.spriteBatch.draw(bar, pipe2.getX(), pipe2.getY() + pipe2.getHeight() + 45,
+                pipe2.getWidth(), midPointY + 66 - (pipe2.getHeight() + 45));
+
+        this.spriteBatch.draw(bar, pipe3.getX(), pipe3.getY(), pipe3.getWidth(),
+                pipe3.getHeight());
+        this.spriteBatch.draw(bar, pipe3.getX(), pipe3.getY() + pipe3.getHeight() + 45,
+                pipe3.getWidth(), midPointY + 66 - (pipe3.getHeight() + 45));
     }
 }

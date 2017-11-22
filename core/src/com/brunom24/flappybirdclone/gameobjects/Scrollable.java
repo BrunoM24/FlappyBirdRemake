@@ -34,6 +34,10 @@ public abstract class Scrollable {
         isScrolledLeft = false;
     }
 
+    public void stop(){
+        this.velocity.x = 0;
+    }
+
     public boolean isScrolledLeft(){
         return isScrolledLeft;
     }
